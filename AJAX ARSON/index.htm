@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Example</title>
+</head>
+<body>
+    <h1>CRUD Example</h1>
+    <div>
+        <h2>Create User</h2>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="email" placeholder="Email">
+        <button onclick="createUser()">Create</button>
+    </div>
+    <div>
+        <h2>Users List</h2>
+        <button onclick="readUsers()">Refresh</button>
+        <ul id="usersList"></ul>
+    </div>
+    <script>
+        function createUser() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            fetch('create.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                readUsers();
+            });
+        }
+
+        function readUsers() {
+            fetch('read.php')
+                .then(response => response.json())
+                .then(data => {
+                    const usersList = document.getElementById('usersList');
+                    usersList.innerHTML = '';
+                    data.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = `${user.name} (${user.email})`;
+                        usersList.appendChild(li);
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
